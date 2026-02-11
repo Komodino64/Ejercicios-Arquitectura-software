@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="css/styles.css">    <link rel="stylesheet" href="css/protection.css"></head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Panel de Administración</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="my-ads.html" id="navMyAds" class="hidden">Mis Anuncios</a>
+            <a href="admin.html">Admin</a>
+            <a href="#" id="navLogout">Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-info">
+                        <h3 id="totalCars">0</h3>
+                        <p>Total de Vehículos</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-info">
+                        <h3 id="availableCars">0</h3>
+                        <p>Disponibles</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📧</div>
+                    <div class="stat-info">
+                        <h3 id="pendingMessages">0</h3>
+                        <p>Mensajes Pendientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Vehículos -->
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2>🚗 Gestión de Vehículos</h2>
+                    <button onclick="showAddCarModal()" class="btn-submit">➕ Agregar Vehículo</button>
+                </div>
+                
+                <div id="carsLoading" class="loading">Cargando vehículos...</div>
+                
+                <div id="carsTableContainer" class="hidden">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Marca/Modelo</th>
+                                <th>Año</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Propietario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="carsTableBody">
+                            <!-- Se llenará con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Mensajes de Contacto -->
+            <section class="admin-section">
+                <h2>📧 Mensajes de Contacto</h2>
+                
+                <div id="messagesLoading" class="loading">Cargando mensajes...</div>
+                
+                <div id="messagesContainer" class="messages-grid hidden">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal para Agregar/Editar Vehículo -->
+    <div id="carModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div class="form-container" style="max-width: 700px; margin: 0; max-height: 90vh; overflow-y: auto;">
+            <h2 id="modalTitle">➕ Agregar Vehículo</h2>
+            
+            <form id="carForm">
+                <input type="hidden" id="carDocId">
+                
+                <div class="form-group">
+                    <label for="brand">Marca</label>
+                    <input type="text" id="brand" class="form-input" required placeholder="Ej: Mercedes-Benz">
+                </div>
+                
+                <div class="form-group">
+                    <label for="model">Modelo</label>
+                    <input type="text" id="model" class="form-input" required placeholder="Ej: S-Class">
+                </div>
+                
+                <div class="form-group">
+                    <label for="year">Año</label>
+                    <input type="number" id="year" class="form-input" required min="1900" max="2030" placeholder="2024">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Precio (USD)</label>
+                    <input type="number" id="price" class="form-input" required min="0" step="1000" placeholder="120000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" class="form-textarea" rows="3" required placeholder="Descripción del vehículo..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Estado</label>
+                    <select id="status" class="form-input" required>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Vendido">Vendido</option>
+                        <option value="Reservado">Reservado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Imagen del Vehículo</label>
+                    <button type="button" id="uploadWidget" class="cloudinary-button">
+                        📸 Seleccionar Imagen
+                    </button>
+                    <input type="hidden" id="imageUrl" required>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">💾 Guardar</button>
+                    <button type="button" onclick="closeCarModal()" class="btn-cancel">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    
+    <!-- API Config & Auth (con cache-busting) -->
+    <script>
+        const apiConfigScript = document.createElement('script');
+        apiConfigScript.src = 'js/api-config.js?v=' + Date.now();
+        apiConfigScript.onload = function() {
+            const authScript = document.createElement('script');
+            authScript.src = 'js/auth.js';
+            document.head.appendChild(authScript);
+        };
+        document.head.appendChild(apiConfigScript);
+    </script>
+    
+    <!-- Admin Logic -->
+    <script src="js/admin.js"></script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

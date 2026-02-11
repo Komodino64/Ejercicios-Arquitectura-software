@@ -1,0 +1,86 @@
+@page
+@model ImperialLuxuryCars.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Acceso al Sistema</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/#catalogo">Catálogo</a>
+            <a href="/Contact">Contacto</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="form-container" style="max-width: 500px;">
+            <h2>Iniciar Sesión</h2>
+            
+            <div class="info-box">
+                <h4>🔐 Credenciales de Prueba:</h4>
+                <p><strong>Admin:</strong> admin@imperialluxury.com / admin123</p>
+                <p><small>Puedes registrar una cuenta normal o usar las credenciales de administrador</small></p>
+            </div>
+            
+            <form method="post" class="admin-form">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                
+                <div class="form-group">
+                    <label asp-for="Input.Email">Email</label>
+                    <input asp-for="Input.Email" class="form-input" placeholder="tu@email.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Input.Password">Contraseña</label>
+                    <input asp-for="Input.Password" class="form-input" type="password" placeholder="••••••••" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input asp-for="Input.RememberMe" type="checkbox" />
+                        Recordarme
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">🔓 Iniciar Sesión</button>
+                    <a href="/" class="btn-cancel">Cancelar</a>
+                </div>
+                
+                <div class="form-footer">
+                    <p>¿No tienes cuenta? <a href="/Account/Register">Regístrate aquí</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

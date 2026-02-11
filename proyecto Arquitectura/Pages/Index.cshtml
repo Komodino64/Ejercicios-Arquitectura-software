@@ -1,0 +1,149 @@
+@page
+@model ImperialLuxuryCars.Pages.IndexModel
+@{
+    ViewData["Title"] = "Imperial Luxury Cars";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
+        /* Esto impide que el usuario sombree o seleccione texto e imágenes */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Estándar */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Los vehículos más exclusivos al alcance de tu mano</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="#catalogo">Catálogo</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="/Admin">Administración</a>
+            }
+            <a href="/Contact">Contacto</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/Account/Logout">Cerrar Sesión (@User.Identity.Name)</a>
+            }
+            else
+            {
+                <a href="/Account/Login">Iniciar Sesión</a>
+                <a href="/Account/Register">Registrarse</a>
+            }
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Sección de Búsqueda y Filtros -->
+        <section class="search-section">
+            <h2>Buscar tu Vehículo Ideal</h2>
+            <form method="get" class="search-form">
+                <div class="search-grid">
+                    <input type="text" name="SearchTerm" placeholder="Buscar por marca, modelo..." value="@Model.SearchTerm" class="search-input">
+                    <select name="Brand" class="search-select">
+                        <option value="">Todas las marcas</option>
+                        <option value="Mercedes-Benz" selected="@(Model.Brand == "Mercedes-Benz")">Mercedes-Benz</option>
+                        <option value="BMW" selected="@(Model.Brand == "BMW")">BMW</option>
+                        <option value="Audi" selected="@(Model.Brand == "Audi")">Audi</option>
+                        <option value="Porsche" selected="@(Model.Brand == "Porsche")">Porsche</option>
+                        <option value="Jaguar" selected="@(Model.Brand == "Jaguar")">Jaguar</option>
+                        <option value="Lexus" selected="@(Model.Brand == "Lexus")">Lexus</option>
+                    </select>
+                    <input type="number" name="MaxPrice" placeholder="Precio máximo" value="@Model.MaxPrice" class="search-input">
+                    <button type="submit" class="btn-search">🔍 Buscar</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="catalogo" class="catalog-section">
+            <h2>Nuestro Catálogo Premium</h2>
+            @if (Model.Cars.Any())
+            {
+                <div class="cars-grid">
+                    @foreach (var car in Model.Cars)
+                    {
+                        <div class="car-card">
+                            <img src="@car.ImageUrl" alt="@car.Brand @car.Model" />
+                            <div class="car-info">
+                                <h3>@car.Brand @car.Model</h3>
+                                <p class="year">Año: @car.Year | 🛣️ @car.Mileage.ToString("N0") km</p>
+                                <p class="specs">🎨 @car.Color | ⛽ @car.FuelType | ⚙️ @car.Transmission</p>
+                                <p class="description">@car.Description</p>
+                                <div class="car-footer">
+                                    <span class="price">$@car.Price.ToString("N0")</span>
+                                    <span class="status @(car.Status.ToLower())">@car.Status</span>
+                                </div>
+                                <div class="card-actions">
+                                    <a href="/Details?id=@car.Id" class="btn-details">Ver Detalles</a>
+                                    <a href="/Contact?carId=@car.Id" class="btn-contact">Contactar</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="no-results">No se encontraron vehículos con los criterios especificados.</p>
+            }
+        </section>
+
+        <section id="contacto" class="contact-section">
+            <h2>Contáctanos</h2>
+            <p>¿Interesado en alguno de nuestros vehículos? ¡Estamos aquí para ayudarte!</p>
+            <div class="contact-info">
+                <p>📞 Teléfono: +57 302 6648008</p>
+                <p>📧 Email: ventas@imperialluxurycars.com</p>
+                <p>📍 Dirección: Carrera 119a#70a-65</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Bloquear Clic Derecho
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            alert('El código de este sitio está protegido.');
+        });
+
+        // 2. Bloquear Teclas Comunes (F12, Ctrl+U, Ctrl+S)
+        document.onkeydown = function (e) {
+            // F12
+            if (e.keyCode == 123) {
+                return false;
+            }
+            // Ctrl+U (Ver código fuente)
+            if (e.ctrlKey && e.keyCode == 85) {
+                return false;
+            }
+            // Ctrl+Shift+I (Inspector)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>

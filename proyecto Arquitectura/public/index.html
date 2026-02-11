@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperial Luxury Cars - Venta de Autos de Lujo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/protection.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Elegancia y exclusividad en cada detalle</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="my-ads.html" id="navMyAds" class="hidden">Mis Anuncios</a>
+            <a href="#" id="navAdmin" class="hidden">Admin</a>
+            <a href="#" id="navLogout" class="hidden">Cerrar Sesión</a>
+            <a href="login.html" id="navLogin">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="catalog-section">
+                <h2>Catálogo de Vehículos</h2>
+                
+                <!-- Controles de Búsqueda y Filtros -->
+                <div class="search-filters" id="search-filters" style="display: none;">
+                    <!-- Barra de búsqueda -->
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="🔍 Buscar por marca, modelo o descripción..." />
+                    </div>
+                    
+                    <!-- Filtros y Ordenamiento -->
+                    <div class="filters-container">
+                        <div class="filter-group">
+                            <label>💰 Precio Máximo:</label>
+                            <input type="number" id="filterMaxPrice" placeholder="Ej: 500000" min="0" step="10000" />
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>🏷️ Marca:</label>
+                            <select id="filterBrand">
+                                <option value="">Todas las marcas</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>📊 Estado:</label>
+                            <select id="filterStatus">
+                                <option value="">Todos</option>
+                                <option value="Disponible">Disponible</option>
+                                <option value="Reservado">Reservado</option>
+                                <option value="Vendido">Vendido</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>📅 Año Mínimo:</label>
+                            <input type="number" id="filterYear" placeholder="Ej: 2020" min="1990" max="2026" />
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>🔄 Ordenar por:</label>
+                            <select id="sortBy">
+                                <option value="price-asc">Precio: Menor a Mayor</option>
+                                <option value="price-desc">Precio: Mayor a Menor</option>
+                                <option value="year-desc">Año: Más Nuevo</option>
+                                <option value="year-asc">Año: Más Antiguo</option>
+                                <option value="brand-asc">Marca: A-Z</option>
+                            </select>
+                        </div>
+                        
+                        <button id="clearFilters" class="btn-clear-filters">🗑️ Limpiar Filtros</button>
+                    </div>
+                    
+                    <!-- Contador de resultados -->
+                    <div class="results-counter" id="resultsCounter"></div>
+                </div>
+                
+                <div id="loading" class="loading">
+                    <p>⏳ Cargando vehículos...</p>
+                </div>
+
+                <div id="cars-container" class="cars-grid"></div>
+                
+                <div id="no-cars" class="hidden" style="text-align: center; padding: 60px; color: #64748b;">
+                    <p style="font-size: 1.3em;">😔 No hay vehículos disponibles en este momento.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- API Config & Auth & Load Cars -->
+    <script>
+        // Cargar api-config.js sin caché
+        const apiConfigScript = document.createElement('script');
+        apiConfigScript.src = 'js/api-config.js?v=' + Date.now();
+        apiConfigScript.onload = function() {
+            // Después cargar auth.js
+            const authScript = document.createElement('script');
+            authScript.src = 'js/auth.js';
+            authScript.onload = function() {
+                // Cuando ambos scripts estén cargados, cargar los autos
+                initializeCatalog();
+            };
+            document.head.appendChild(authScript);
+        };
+        document.head.appendChild(apiConfigScript);
+        
+        // Inicializar catálogo (se ejecuta después de cargar API y Auth)
+        function initializeCatalog() {
+            const carsContainer = document.getElementById('cars-container');
+            const loadingDiv = document.getElementById('loading');
+            const noCarsDiv = document.getElementById('no-cars');
+            let allCars = []; // Guardar todos los autos para filtrado
+
+            // Función para renderizar un carro
+            function renderCar(car) {
+            const statusClass = car.status.toLowerCase();
+            const statusText = car.status === 'Disponible' ? 'Disponible' : 
+                              car.status === 'Vendido' ? 'Vendido' : 'Reservado';
+            const ownerDisplay = car.ownerEmail ? `<p style="font-size: 0.85em; color: #64748b; margin: 5px 0;"><strong>👤 Vendedor:</strong> ${car.ownerEmail.split('@')[0]}</p>` : '';
+            
+            // Verificar si el usuario puede editar (owner o admin)
+            const currentUser = Auth.getCurrentUser();
+            const canEdit = currentUser && (currentUser.role === 'admin' || car.ownerId === currentUser.id);
+            
+            const editButton = canEdit ? 
+                `<button class="btn-edit" onclick="editCar('${car.id}')" style="background: #f59e0b; color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 8px; width: 100%; transition: all 0.3s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">✏️ Editar Vehículo</button>` : 
+                '';
+            
+            return `
+                <div class="car-card" data-car-id="${car.id}">
+                    <img src="${car.imageUrl}" alt="${car.brand} ${car.model}">
+                    <div class="car-info">
+                        <h3>${car.brand} ${car.model}</h3>
+                        <p class="year">${car.year}</p>
+                        <p class="description">${car.description}</p>
+                        ${ownerDisplay}
+                        <div class="car-footer">
+                            <span class="price">$${car.price.toLocaleString()}</span>
+                            <span class="status ${statusClass}">${statusText}</span>
+                        </div>
+                        ${car.status === 'Disponible' ? 
+                            `<a href="contact.html?carId=${car.id}" class="btn-contact">Contactar Ahora 📧</a>` : 
+                            '<button class="btn-contact" disabled style="opacity: 0.6; cursor: not-allowed;">No Disponible</button>'
+                        }
+                        ${editButton}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Función global para editar (accesible desde onclick)
+        window.editCar = function(carId) {
+            window.location.href = `admin.html?edit=${carId}`;
+        };
+
+        // Cargar carros desde API REST
+        async function loadCars() {
+            try {
+                const cars = await API.cars.getAll();
+                allCars = cars; // Guardar para filtrado
+                
+                loadingDiv.classList.add('hidden');
+                
+                if (cars.length === 0) {
+                    noCarsDiv.classList.remove('hidden');
+                    carsContainer.innerHTML = '';
+                    return;
+                }
+                
+                // Mostrar controles de búsqueda
+                document.getElementById('search-filters').style.display = 'block';
+                
+                // Extraer marcas únicas para el filtro
+                const brands = [...new Set(cars.map(c => c.brand))].sort();
+                const brandSelect = document.getElementById('filterBrand');
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    brandSelect.appendChild(option);
+                });
+                
+                // Configurar event listeners para filtros
+                setupFilters();
+                
+                // Mostrar todos los autos inicialmente
+                displayCars(cars);
+            } catch (error) {
+                console.error('Error cargando carros:', error);
+                loadingDiv.innerHTML = '<p style="color: #ef4444;">❌ Error cargando vehículos. Por favor recarga la página.</p>';
+            }
+        }
+        
+        // Mostrar autos filtrados
+        function displayCars(cars) {
+            noCarsDiv.classList.add('hidden');
+            carsContainer.innerHTML = '';
+            
+            if (cars.length === 0) {
+                noCarsDiv.classList.remove('hidden');
+                document.getElementById('resultsCounter').textContent = '0 vehículos encontrados';
+                return;
+            }
+            
+            cars.forEach(car => {
+                carsContainer.innerHTML += renderCar(car);
+            });
+            
+            // Actualizar contador
+            const total = allCars.length;
+            const shown = cars.length;
+            document.getElementById('resultsCounter').textContent = 
+                shown === total ? `${total} vehículos` : `${shown} de ${total} vehículos`;
+        }
+        
+        // Configurar filtros y búsqueda
+        function setupFilters() {
+            const searchInput = document.getElementById('searchInput');
+            const filterMaxPrice = document.getElementById('filterMaxPrice');
+            const filterBrand = document.getElementById('filterBrand');
+            const filterStatus = document.getElementById('filterStatus');
+            const filterYear = document.getElementById('filterYear');
+            const sortBy = document.getElementById('sortBy');
+            const clearBtn = document.getElementById('clearFilters');
+            
+            // Aplicar filtros en tiempo real
+            const applyFilters = () => {
+                let filtered = [...allCars];
+                
+                // Búsqueda por texto
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                if (searchTerm) {
+                    filtered = filtered.filter(car => 
+                        car.brand.toLowerCase().includes(searchTerm) ||
+                        car.model.toLowerCase().includes(searchTerm) ||
+                        car.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Filtro por precio máximo
+                const maxPrice = parseFloat(filterMaxPrice.value);
+                if (!isNaN(maxPrice) && maxPrice > 0) {
+                    filtered = filtered.filter(car => car.price <= maxPrice);
+                }
+                
+                // Filtro por marca
+                const brand = filterBrand.value;
+                if (brand) {
+                    filtered = filtered.filter(car => car.brand === brand);
+                }
+                
+                // Filtro por estado
+                const status = filterStatus.value;
+                if (status) {
+                    filtered = filtered.filter(car => car.status === status);
+                }
+                
+                // Filtro por año mínimo
+                const minYear = parseInt(filterYear.value);
+                if (!isNaN(minYear)) {
+                    filtered = filtered.filter(car => car.year >= minYear);
+                }
+                
+                // Ordenamiento
+                const sort = sortBy.value;
+                switch(sort) {
+                    case 'price-asc':
+                        filtered.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price-desc':
+                        filtered.sort((a, b) => b.price - a.price);
+                        break;
+                    case 'year-desc':
+                        filtered.sort((a, b) => b.year - a.year);
+                        break;
+                    case 'year-asc':
+                        filtered.sort((a, b) => a.year - b.year);
+                        break;
+                    case 'brand-asc':
+                        filtered.sort((a, b) => a.brand.localeCompare(b.brand));
+                        break;
+                }
+                
+                displayCars(filtered);
+            };
+            
+            // Event listeners
+            searchInput.addEventListener('input', applyFilters);
+            filterMaxPrice.addEventListener('input', applyFilters);
+            filterBrand.addEventListener('change', applyFilters);
+            filterStatus.addEventListener('change', applyFilters);
+            filterYear.addEventListener('input', applyFilters);
+            sortBy.addEventListener('change', applyFilters);
+            
+            // Limpiar filtros
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                filterMaxPrice.value = '';
+                filterBrand.value = '';
+                filterStatus.value = '';
+                filterYear.value = '';
+                sortBy.value = 'price-asc';
+                applyFilters();
+            });
+        }
+
+        // Cargar al iniciar
+        loadCars();
+        }
+    </script>
+    
+    <!-- Code Protection -->
+    <script>
+        // Protección contra copia de código
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('selectstart', e => e.preventDefault());
+    </script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

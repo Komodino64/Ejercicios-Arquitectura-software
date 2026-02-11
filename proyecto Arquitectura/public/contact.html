@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="css/styles.css">    <link rel="stylesheet" href="css/protection.css"></head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Contáctanos</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="my-ads.html" id="navMyAds" class="hidden">Mis Anuncios</a>
+            <a href="#" id="navAdmin" class="hidden">Admin</a>
+            <a href="#" id="navLogout" class="hidden">Cerrar Sesión</a>
+            <a href="login.html" id="navLogin">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="contact-form-section">
+                <h2>📧 Envíanos un Mensaje</h2>
+                
+                <div id="selectedCarInfo" class="hidden" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; border: 2px solid #10b981;">
+                    <!-- Se llenará con JavaScript si hay un carro seleccionado -->
+                </div>
+                
+                <form id="contactForm">
+                    <input type="hidden" id="carId" value="">
+                    
+                    <div class="form-group">
+                        <label for="name">Nombre completo</label>
+                        <input type="text" id="name" class="form-input" required 
+                               placeholder="Tu nombre" autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-input" required 
+                               placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" class="form-input" required 
+                               placeholder="+57 300 1234567" autocomplete="tel">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Mensaje</label>
+                        <textarea id="message" class="form-textarea" rows="5" required 
+                                  placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">📧 Enviar Mensaje</button>
+                        <a href="index.html" class="btn-cancel">Cancelar</a>
+                    </div>
+                </form>
+                
+                <div class="contact-info-grid">
+                    <div class="contact-info-item">
+                        <span>📞</span>
+                        <h3>Teléfono</h3>
+                        <p>+57 300 123 4567</p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <span>📧</span>
+                        <h3>Email</h3>
+                        <p>info@imperialluxury.com</p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <span>📍</span>
+                        <h3>Ubicación</h3>
+                        <p>Bogotá, Colombia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- API Config & Auth (con cache-busting) -->
+    <script>
+        const apiConfigScript = document.createElement('script');
+        apiConfigScript.src = 'js/api-config.js?v=' + Date.now();
+        apiConfigScript.onload = function() {
+            const authScript = document.createElement('script');
+            authScript.src = 'js/auth.js';
+            document.head.appendChild(authScript);
+        };
+        document.head.appendChild(apiConfigScript);
+    </script>
+    
+    <!-- Contact Logic -->
+    <script>
+        // Obtener carId de la URL si existe
+        const urlParams = new URLSearchParams(window.location.search);
+        const carId = urlParams.get('carId');
+        
+        if (carId) {
+            document.getElementById('carId').value = carId;
+            
+            // Cargar info del carro seleccionado
+            API.cars.getOne(carId).then(car => {
+                const infoDiv = document.getElementById('selectedCarInfo');
+                infoDiv.innerHTML = `
+                    <p style="color: #065f46; font-weight: 700; font-size: 1.1em;">
+                        ✅ Consulta sobre: <strong>${car.brand} ${car.model} (${car.year})</strong>
+                    </p>
+                `;
+                infoDiv.classList.remove('hidden');
+            }).catch(error => {
+                console.error('Error cargando carro:', error);
+            });
+        }
+        
+        // Manejar envío del formulario
+        const contactForm = document.getElementById('contactForm');
+        
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Enviando...';
+            
+            try {
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    message: document.getElementById('message').value,
+                    carId: document.getElementById('carId').value || null
+                };
+                
+                // Enviar a través de la API
+                await API.contact.send(formData);
+                
+                alert('✅ ¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                console.error('Error enviando mensaje:', error);
+                alert('❌ Error al enviar el mensaje. Por favor intenta de nuevo.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📧 Enviar Mensaje';
+            }
+        });
+    </script>
+    
+    <!-- Code Protection -->
+    <script>
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('selectstart', e => e.preventDefault());
+    </script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

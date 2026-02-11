@@ -1,0 +1,137 @@
+@page
+@model ImperialLuxuryCars.Pages.AdminModel
+@{
+    ViewData["Title"] = "Panel de Administración";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS - ADMIN</h1>
+            <p class="tagline">Panel de Administración</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/Admin">Dashboard</a>
+            <a href="/Admin/Create">Agregar Vehículo</a>
+            <a href="/Admin/Messages">Mensajes</a>
+            <a href="/Account/Logout">Cerrar Sesión (@User.Identity!.Name)</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Dashboard Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🚗</div>
+                <div class="stat-info">
+                    <h3>@Model.TotalCars</h3>
+                    <p>Vehículos Totales</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3>@Model.AvailableCars</h3>
+                    <p>Disponibles</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📧</div>
+                <div class="stat-info">
+                    <h3>@Model.PendingMessages</h3>
+                    <p>Mensajes Recibidos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gestión de Vehículos -->
+        <section class="admin-section">
+            <div class="section-header">
+                <h2>Gestión de Vehículos</h2>
+                <a href="/Admin/Create" class="btn-add">➕ Agregar Vehículo</a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Imagen</th>
+                            <th>Marca/Modelo</th>
+                            <th>Año</th>
+                            <th>Precio</th>
+                            <th>Kilometraje</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var car in Model.Cars)
+                        {
+                            <tr>
+                                <td>@car.Id</td>
+                                <td><img src="@car.ImageUrl" alt="@car.Brand" class="table-img" /></td>
+                                <td>
+                                    <strong>@car.Brand</strong><br/>
+                                    @car.Model
+                                </td>
+                                <td>@car.Year</td>
+                                <td>$@car.Price.ToString("N0")</td>
+                                <td>@car.Mileage.ToString("N0") km</td>
+                                <td><span class="badge @(car.Status.ToLower())">@car.Status</span></td>
+                                <td class="action-buttons">
+                                    <a href="/Admin/Edit?id=@car.Id" class="btn-edit">✏️</a>
+                                    <a href="/Admin/Delete?id=@car.Id" class="btn-delete">🗑️</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Mensajes Recientes -->
+        <section class="admin-section">
+            <div class="section-header">
+                <h2>Mensajes Recientes</h2>
+                <a href="/Admin/Messages" class="btn-view-all">Ver Todos →</a>
+            </div>
+            
+            <div class="messages-list">
+                @foreach (var message in Model.Messages)
+                {
+                    <div class="message-card">
+                        <div class="message-header">
+                            <strong>@message.Name</strong>
+                            <span class="message-date">@message.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                        <div class="message-body">
+                            <p>📧 @message.Email | 📞 @message.Phone</p>
+                            <p>@message.Message</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

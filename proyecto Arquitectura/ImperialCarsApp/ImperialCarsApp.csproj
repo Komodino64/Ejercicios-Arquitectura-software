@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <!-- <ApplicationIcon>icon.ico</ApplicationIcon> -->
+    <AssemblyName>ImperialLuxuryCars</AssemblyName>
+    <Version>1.0.0</Version>
+    <Authors>Imperial Luxury Cars</Authors>
+    <Company>Imperial Luxury Cars</Company>
+    <Product>Imperial Luxury Cars Desktop</Product>
+    <Description>Aplicación de escritorio para Imperial Luxury Cars</Description>
+    <Copyright>Copyright © 2026</Copyright>
+    
+    <!-- Configuración para publicación -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WebView2 para mostrar la página web -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Incluir todos los archivos web -->
+    <None Include="wwwroot\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

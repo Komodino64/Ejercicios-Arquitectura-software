@@ -1,0 +1,79 @@
+@page
+@model ImperialLuxuryCars.Pages.Admin.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Vehículo";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS - ADMIN</h1>
+            <p class="tagline">Eliminar Vehículo</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/Admin">Dashboard</a>
+            <a href="/Admin/Create">Agregar Vehículo</a>
+            <a href="/Admin/Messages">Mensajes</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="delete-container">
+            <div class="warning-box">
+                <h2>⚠️ Confirmar Eliminación</h2>
+                <p>¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.</p>
+            </div>
+            
+            <div class="car-details-box">
+                <h3>Detalles del Vehículo</h3>
+                <dl>
+                    <dt>Marca:</dt>
+                    <dd>@Model.Car.Brand</dd>
+                    
+                    <dt>Modelo:</dt>
+                    <dd>@Model.Car.Model</dd>
+                    
+                    <dt>Año:</dt>
+                    <dd>@Model.Car.Year</dd>
+                    
+                    <dt>Precio:</dt>
+                    <dd>$@Model.Car.Price.ToString("N0")</dd>
+                    
+                    <dt>Kilometraje:</dt>
+                    <dd>@Model.Car.Mileage.ToString("N0") km</dd>
+                    
+                    <dt>Estado:</dt>
+                    <dd>@Model.Car.Status</dd>
+                </dl>
+            </div>
+            
+            <form method="post" class="delete-form">
+                <input type="hidden" asp-for="Car.Id" />
+                <div class="form-actions">
+                    <button type="submit" class="btn-delete-confirm">🗑️ Sí, Eliminar</button>
+                    <a href="/Admin" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="css/styles.css">    <link rel="stylesheet" href="css/protection.css"></head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Iniciar Sesión</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="login.html">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="form-container">
+                <h2>🔐 Iniciar Sesión</h2>
+                
+                <div class="info-box">
+                    <h4>👨‍💼 Cuenta de Administrador</h4>
+                    <p><strong>Email:</strong> admin@imperialluxury.com</p>
+                    <p><strong>Contraseña:</strong> admin123</p>
+                    <p style="margin-top: 10px; font-size: 0.9em;">Usa estas credenciales para acceder al panel de administración.</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-input" required 
+                               placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" class="form-input" required 
+                               placeholder="Tu contraseña" autocomplete="current-password">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">🔓 Iniciar Sesión</button>
+                        <a href="index.html" class="btn-cancel">Cancelar</a>
+                    </div>
+                </form>
+
+                <div class="form-footer">
+                    <p>¿No tienes cuenta? <a href="register.html">Regístrate aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <!-- API Config -->
+    <script src="js/api-config.js"></script>
+    
+    <!-- Login Logic -->
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Iniciando sesión...';
+            
+            try {
+                const response = await API.auth.login(email, password);
+                
+                // Guardar token y datos de usuario
+                saveAuthToken(response.token);
+                saveUserData(response.user);
+                
+                alert('✅ ¡Bienvenido de nuevo!');
+                window.location.href = response.user.role === 'admin' ? 'admin.html' : 'index.html';
+                
+            } catch (error) {
+                console.error('Error login:', error);
+                alert('❌ ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🔓 Iniciar Sesión';
+            }
+        });
+    </script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

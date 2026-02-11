@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/protection.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Crear Cuenta</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="login.html">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <div class="form-container">
+                <h2>📝 Registrarse</h2>
+                
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-input" required 
+                               placeholder="tucorreo@ejemplo.com" autocomplete="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" class="form-input" required 
+                               placeholder="Mínimo 6 caracteres" minlength="6" autocomplete="new-password">
+                        <span class="text-danger" style="display: block; margin-top: 5px; font-size: 0.85em;">
+                            La contraseña debe tener al menos 6 caracteres
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Contraseña</label>
+                        <input type="password" id="confirmPassword" class="form-input" required 
+                               placeholder="Repite tu contraseña" minlength="6" autocomplete="new-password">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">✅ Crear Cuenta</button>
+                        <a href="index.html" class="btn-cancel">Cancelar</a>
+                    </div>
+                </form>
+
+                <div class="form-footer">
+                    <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <!-- API Config -->
+    <script src="js/api-config.js"></script>
+    
+    <!-- Register Logic -->
+    <script>
+        const registerForm = document.getElementById('registerForm');
+        
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const submitBtn = registerForm.querySelector('button[type="submit"]');
+            
+            if (password !== confirmPassword) {
+                alert('❌ Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('❌ La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Creando cuenta...';
+            
+            try {
+                const response = await API.auth.register(email, password);
+                
+                // Guardar token y datos
+                saveAuthToken(response.token);
+                saveUserData(response.user);
+                
+                alert('✅ ¡Cuenta creada exitosamente! Bienvenido.');
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                console.error('Error registro:', error);
+                alert('❌ ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✅ Crear Cuenta';
+            }
+        });
+    </script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

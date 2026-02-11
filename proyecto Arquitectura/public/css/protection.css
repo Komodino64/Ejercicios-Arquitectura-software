@@ -1,0 +1,91 @@
+/* ============================================
+   🛡️ PROTECCIÓN CSS ANTI-COPIA
+   ============================================ */
+
+/* Bloquear selección de texto en todos los elementos */
+* {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Permitir selección solo en inputs y textareas */
+input,
+textarea,
+[contenteditable="true"] {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Bloquear arrastre de imágenes */
+img {
+    pointer-events: none !important;
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+}
+
+/* Botones y enlaces siguen siendo clickeables pero no arrastrables */
+a, button {
+    -webkit-user-drag: none !important;
+    -khtml-user-drag: none !important;
+    -moz-user-drag: none !important;
+    -o-user-drag: none !important;
+    user-drag: none !important;
+}
+
+/* Ocultar el cursor cuando se intenta seleccionar */
+::selection {
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+::-moz-selection {
+    background-color: transparent !important;
+    color: inherit !important;
+}
+
+/* Prevenir zoom en móviles (dificulta screenshot) */
+@media screen and (max-width: 768px) {
+    * {
+        touch-action: pan-x pan-y !important;
+    }
+}
+
+/* Watermark invisible (solo visible en screenshot) */
+body::before {
+    content: "© Imperial Luxury Cars - Copia no autorizada";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 5vw;
+    color: rgba(255, 255, 255, 0.02);
+    pointer-events: none;
+    z-index: 9999;
+    white-space: nowrap;
+}
+
+/* Ocultar scrollbar para dificultar screenshot completo */
+*::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Filtro blur cuando se detecta screenshot (requiere JS) */
+body.screenshot-detected * {
+    filter: blur(10px) !important;
+    transition: filter 0.1s !important;
+}

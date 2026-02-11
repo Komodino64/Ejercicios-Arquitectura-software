@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function: Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function: Check if user is admin (reemplaza con tu UID de admin)
+    function isAdmin() {
+      return isAuthenticated() && request.auth.uid == "KZHNi0Nft1OH8FsLDEx8OrkGTHn1";
+    }
+    
+    // Cars collection - Marketplace rules
+    match /cars/{carId} {
+      allow read: if true; // Todos pueden leer
+      allow create: if isAuthenticated(); // Usuarios autenticados pueden publicar
+      allow update, delete: if isAuthenticated() && 
+        (request.auth.uid == resource.data.ownerId || isAdmin()); // Solo dueño o admin
+    }
+    
+    // Contact Messages - Create: Everyone, Read/Update/Delete: Admin only
+    match /contactMessages/{messageId} {
+      allow read, update, delete: if isAdmin(); // Solo admin puede leer/editar/eliminar
+      allow create: if true; // Todos pueden crear (enviar mensajes)
+    }
+    
+    // Users collection - Users can read their own data, Admin can read all
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAuthenticated(); // Usuarios pueden crear su propio documento
+      allow update, delete: if isAdmin(); // Solo admin puede actualizar/eliminar
+    }
+  }
+}

@@ -1,0 +1,610 @@
+===============================================================================
+  IMPERIAL LUXURY CARS - DOCUMENTACION DEL PROYECTO
+===============================================================================
+
+INFORMACION GENERAL
+-------------------
+Proyecto: Imperial Luxury Cars  
+Tecnologias: ASP.NET Core (C#), Razor Pages, HTML5, CSS3, JavaScript  
+Framework: .NET 10.0  
+Fecha: Febrero 2026
+
+===============================================================================
+ESTRUCTURA DEL PROYECTO
+===============================================================================
+
+proyecto Arquitectura/
+├── ImperialLuxuryCars.csproj          # Archivo de configuracion del proyecto
+├── Program.cs                          # Punto de entrada de la aplicacion
+├── Models/
+│   └── Car.cs                         # Modelo de datos para los carros
+├── Pages/
+│   ├── Index.cshtml                   # Vista principal (HTML + Razor)
+│   ├── Index.cshtml.cs                # Codigo C# detras de la vista
+│   └── _ViewImports.cshtml            # Configuracion de imports
+└── wwwroot/
+    └── css/
+        └── site.css                   # Estilos CSS de la aplicacion
+
+===============================================================================
+1. ARCHIVO DE CONFIGURACION DEL PROYECTO
+===============================================================================
+
+Archivo: ImperialLuxuryCars.csproj
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+</Project>
+
+Explicacion:
+- Sdk="Microsoft.NET.Sdk.Web": Define que es una aplicacion web ASP.NET
+- TargetFramework: Especifica la version de .NET (10.0)
+- Nullable: Habilita referencias nulables para mayor seguridad
+- ImplicitUsings: Importa automaticamente namespaces comunes
+
+===============================================================================
+2. PUNTO DE ENTRADA (Program.cs)
+===============================================================================
+
+Archivo: Program.cs
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+app.MapRazorPages();
+
+app.Run();
+
+Explicacion:
+- Builder Pattern: Crea y configura la aplicacion
+- AddRazorPages(): Habilita Razor Pages para las vistas
+- UseStaticFiles(): Permite servir archivos CSS, imagenes, JavaScript
+- MapRazorPages(): Mapea las rutas de las paginas Razor
+- app.Run(): Inicia el servidor web
+
+===============================================================================
+3. MODELO DE DATOS (Car.cs)
+===============================================================================
+
+Archivo: Models/Car.cs
+
+namespace ImperialLuxuryCars.Models
+{
+    public class Car
+    {
+        public int Id { get; set; }
+        public string Brand { get; set; } = string.Empty;
+        public string Model { get; set; } = string.Empty;
+        public int Year { get; set; }
+        public decimal Price { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Status { get; set; } = "Disponible";
+    }
+}
+
+Explicacion:
+- Clase Car: Representa un vehiculo en el sistema
+- Propiedades:
+  * Id: Identificador unico
+  * Brand: Marca del vehiculo (Mercedes-Benz, BMW, etc.)
+  * Model: Modelo especifico
+  * Year: Año de fabricacion
+  * Price: Precio en formato decimal
+  * ImageUrl: URL de la imagen del vehiculo
+  * Description: Descripcion breve
+  * Status: Estado (Disponible/Vendido)
+- = string.Empty: Inicializa las cadenas vacias por defecto
+
+===============================================================================
+4. LOGICA DEL BACKEND (Index.cshtml.cs)
+===============================================================================
+
+Archivo: Pages/Index.cshtml.cs
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ImperialLuxuryCars.Models;
+
+namespace ImperialLuxuryCars.Pages
+{
+    public class IndexModel : PageModel
+    {
+        public List<Car> Cars { get; set; } = new();
+
+        public void OnGet()
+        {
+            // Datos de ejemplo - mas adelante se conectara a base de datos
+            Cars = new List<Car>
+            {
+                new Car
+                {
+                    Id = 1,
+                    Brand = "Mercedes-Benz",
+                    Model = "S-Class",
+                    Year = 2024,
+                    Price = 120000,
+                    ImageUrl = "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=500",
+                    Description = "Lujo y elegancia en su maxima expresion",
+                    Status = "Disponible"
+                },
+                new Car
+                {
+                    Id = 2,
+                    Brand = "BMW",
+                    Model = "7 Series",
+                    Year = 2024,
+                    Price = 105000,
+                    ImageUrl = "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=500",
+                    Description = "Tecnologia y confort premium",
+                    Status = "Disponible"
+                },
+                new Car
+                {
+                    Id = 3,
+                    Brand = "Audi",
+                    Model = "A8",
+                    Year = 2023,
+                    Price = 95000,
+                    ImageUrl = "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=500",
+                    Description = "Diseño sofisticado y potencia",
+                    Status = "Disponible"
+                },
+                new Car
+                {
+                    Id = 4,
+                    Brand = "Porsche",
+                    Model = "Panamera",
+                    Year = 2024,
+                    Price = 140000,
+                    ImageUrl = "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500",
+                    Description = "Deportividad y exclusividad",
+                    Status = "Disponible"
+                },
+                new Car
+                {
+                    Id = 5,
+                    Brand = "Jaguar",
+                    Model = "XJ",
+                    Year = 2023,
+                    Price = 88000,
+                    ImageUrl = "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=500",
+                    Description = "Elegancia britanica",
+                    Status = "Disponible"
+                },
+                new Car
+                {
+                    Id = 6,
+                    Brand = "Lexus",
+                    Model = "LS 500",
+                    Year = 2024,
+                    Price = 92000,
+                    ImageUrl = "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=500",
+                    Description = "Refinamiento japones",
+                    Status = "Disponible"
+                }
+            };
+        }
+    }
+}
+
+Explicacion:
+- IndexModel: Clase que maneja la logica de la pagina principal
+- Hereda de PageModel: Patron Razor Pages
+- Property Cars: Lista de vehiculos disponibles
+- Metodo OnGet(): Se ejecuta cuando se carga la pagina (peticion GET)
+  * Actualmente con datos estaticos
+  * En produccion se conectaria a una base de datos
+
+===============================================================================
+5. VISTA HTML CON RAZOR (Index.cshtml)
+===============================================================================
+
+Archivo: Pages/Index.cshtml
+
+--- ESTRUCTURA PRINCIPAL ---
+
+@page
+@model ImperialLuxuryCars.Pages.IndexModel
+@{
+    ViewData["Title"] = "Imperial Luxury Cars";
+}
+
+Explicacion de Razor Syntax:
+- @page: Define que este archivo es una Razor Page
+- @model: Especifica el modelo C# asociado (IndexModel)
+- @{ }: Bloque de codigo C# para configurar ViewData
+
+--- SECCION HEAD ---
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
+        /* Bloqueo de seleccion de texto */
+        body {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE10+/Edge */
+            user-select: none; /* Estandar */
+        }
+    </style>
+</head>
+
+Explicacion:
+- @ViewData["Title"]: Interpola el titulo desde C#
+- ~/css/site.css: El ~ representa la raiz del proyecto
+- user-select: none: Impide que el usuario seleccione texto
+
+--- CATALOGO DE VEHICULOS ---
+
+<div class="cars-grid">
+    @foreach (var car in Model.Cars)
+    {
+        <div class="car-card">
+            <img src="@car.ImageUrl" alt="@car.Brand @car.Model" />
+            <div class="car-info">
+                <h3>@car.Brand @car.Model</h3>
+                <p class="year">Año: @car.Year</p>
+                <p class="description">@car.Description</p>
+                <div class="car-footer">
+                    <span class="price">$@car.Price.ToString("N0")</span>
+                    <span class="status @(car.Status.ToLower())">@car.Status</span>
+                </div>
+                <button class="btn-contact">Contactar</button>
+            </div>
+        </div>
+    }
+</div>
+
+Explicacion:
+- @foreach: Bucle de Razor que itera sobre la lista de carros
+- @car.Property: Accede a las propiedades del objeto Car
+- @car.Price.ToString("N0"): Formatea el precio con separador de miles
+- @(car.Status.ToLower()): Expresion C# para agregar clase CSS dinamica
+
+===============================================================================
+6. PROTECCION JAVASCRIPT
+===============================================================================
+
+JavaScript al final del body:
+
+<script>
+    // 1. Bloquear Clic Derecho
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        alert('El codigo de este sitio esta protegido.');
+    });
+
+    // 2. Bloquear Teclas Comunes (F12, Ctrl+U, Ctrl+S)
+    document.onkeydown = function (e) {
+        // F12
+        if (e.keyCode == 123) {
+            return false;
+        }
+        // Ctrl+U (Ver codigo fuente)
+        if (e.ctrlKey && e.keyCode == 85) {
+            return false;
+        }
+        // Ctrl+Shift+I (Inspector)
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+            return false;
+        }
+    };
+</script>
+
+--- EXPLICACION DE LAS PROTECCIONES ---
+
+a) Bloqueo de Clic Derecho
+
+document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    alert('El codigo de este sitio esta protegido.');
+});
+
+- contextmenu: Evento que se dispara con clic derecho
+- preventDefault(): Cancela el menu contextual predeterminado
+- alert(): Muestra mensaje al usuario
+
+b) Bloqueo de Teclas
+
+document.onkeydown = function (e) {
+    if (e.keyCode == 123) return false;  // F12
+    if (e.ctrlKey && e.keyCode == 85) return false;  // Ctrl+U
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false;  // Ctrl+Shift+I
+};
+
+- keyCode 123: F12 (Herramientas de desarrollador)
+- keyCode 85: U (Ver codigo fuente)
+- keyCode 73: I (Inspector)
+- return false: Previene la accion predeterminada
+
+===============================================================================
+7. ESTILOS CSS (site.css)
+===============================================================================
+
+Archivo: wwwroot/css/site.css
+
+--- RESET Y CONFIGURACION BASE ---
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+--- HEADER CON GRADIENTE ---
+
+header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+Explicacion:
+- linear-gradient: Crea un degradado del negro al gris
+- box-shadow: Agrega sombra debajo del header
+- 135deg: Angulo del degradado
+
+--- GRID RESPONSIVE DE CARROS ---
+
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+Explicacion:
+- display: grid: Sistema de diseño en rejilla
+- repeat(auto-fit, ...): Crea columnas automaticamente
+- minmax(350px, 1fr): Minimo 350px, maximo fraccion disponible
+- gap: 30px: Espacio entre tarjetas
+
+--- TARJETAS DE CARROS CON EFECTOS ---
+
+.car-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+Explicacion:
+- border-radius: Esquinas redondeadas
+- overflow: hidden: Oculta contenido que sobresale
+- transition: Animacion suave de 0.3 segundos
+- :hover: Efecto al pasar el mouse (eleva la tarjeta 5px)
+
+--- DISEÑO RESPONSIVE ---
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .cars-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    nav a {
+        margin: 0 10px;
+        font-size: 0.9em;
+    }
+}
+
+Explicacion:
+- @media: Media query para pantallas pequeñas
+- max-width: 768px: Aplica en tablets y moviles
+- grid-template-columns: 1fr: Una sola columna en moviles
+
+===============================================================================
+COMO EJECUTAR EL PROYECTO
+===============================================================================
+
+REQUISITOS PREVIOS:
+- .NET 10.0 SDK instalado
+- Terminal (PowerShell, CMD o Bash)
+
+PASOS:
+
+1. Navegar al directorio del proyecto:
+   cd "c:\arquitectura-software-main\proyecto Arquitectura"
+
+2. Ejecutar la aplicacion:
+   dotnet run
+
+3. Abrir en el navegador:
+   http://localhost:5000
+
+4. Para detener el servidor:
+   Ctrl + C
+
+===============================================================================
+RESUMEN DE MEDIDAS DE PROTECCION IMPLEMENTADAS
+===============================================================================
+
+PASO 1: Bloqueo de Seleccion de Texto
+- CSS user-select: none aplicado
+- Impide seleccionar/copiar texto e imagenes
+
+PASO 2: Bloqueo de Interaccion con DevTools
+- Clic derecho deshabilitado
+- F12 bloqueada
+- Ctrl+U bloqueado (ver codigo fuente)
+- Ctrl+Shift+I bloqueado (inspector)
+
+NOTA SOBRE SEGURIDAD:
+Estas son medidas de "capa de molestia" que dificultan el acceso casual, 
+pero no son infalibles. Un usuario tecnico avanzado puede:
+- Abrir DevTools desde el menu del navegador
+- Deshabilitar JavaScript
+- Ver el codigo fuente del servidor
+
+===============================================================================
+CONCEPTOS CLAVE DEL PROYECTO
+===============================================================================
+
+1. PATRON MVC/MVVM (Razor Pages)
+   - Model (Car.cs): Representa los datos
+   - View (Index.cshtml): Presenta la interfaz
+   - ViewModel (IndexModel): Maneja la logica de presentacion
+
+2. RAZOR SYNTAX
+   - @: Transicion de HTML a C#
+   - @{ }: Bloque de codigo C#
+   - @foreach: Bucles
+   - @model: Vinculacion con el modelo
+
+3. ASP.NET CORE PIPELINE
+   Request → Routing → Razor Page → Model Binding → 
+   Page Handler (OnGet) → View Rendering → Response
+
+4. RESPONSIVE DESIGN
+   - CSS Grid para layouts flexibles
+   - Media queries para adaptacion movil
+   - Mobile-first approach
+
+5. EVENT HANDLING EN JAVASCRIPT
+   - addEventListener: Manejo de eventos modernos
+   - preventDefault(): Cancela comportamiento predeterminado
+   - Key codes para detectar teclas especificas
+
+===============================================================================
+PROXIMAS MEJORAS SUGERIDAS
+===============================================================================
+
+BASE DE DATOS:
+- Conectar a SQL Server o PostgreSQL
+- Crear entidad DBContext
+- Implementar Entity Framework Core
+
+FUNCIONALIDADES:
+- Sistema de busqueda y filtros
+- Carrito de compras
+- Registro de usuarios
+- Panel de administracion
+- Sistema de reservas
+
+SEGURIDAD:
+- Autenticacion y autorizacion
+- Proteccion CSRF
+- Validacion de inputs
+- Rate limiting
+
+===============================================================================
+COMANDOS UTILES
+===============================================================================
+
+# Restaurar dependencias
+dotnet restore
+
+# Compilar proyecto
+dotnet build
+
+# Ejecutar en modo desarrollo
+dotnet run
+
+# Ejecutar con watch (recarga automatica)
+dotnet watch run
+
+# Publicar para produccion
+dotnet publish -c Release
+
+# Limpiar archivos compilados
+dotnet clean
+
+===============================================================================
+PARA EL ESTUDIO Y PRESENTACION
+===============================================================================
+
+PUNTOS CLAVE A DESTACAR:
+
+1. Arquitectura Limpia: Separacion clara entre modelos, vistas y logica
+2. Tecnologia Moderna: ASP.NET Core con .NET 10
+3. Responsive Design: Funciona en cualquier dispositivo
+4. Proteccion del Codigo: Medidas anti-copia implementadas
+5. Escalabilidad: Facil agregar mas funcionalidades
+
+DIAGRAMA DE FLUJO:
+
+Usuario → Navegador → http://localhost:5000
+    ↓
+ASP.NET Core (Program.cs)
+    ↓
+Routing → /Index
+    ↓
+IndexModel.OnGet() → Carga datos de carros
+    ↓
+Index.cshtml → Renderiza HTML con Razor
+    ↓
+CSS (site.css) → Aplica estilos
+    ↓
+JavaScript → Aplica protecciones
+    ↓
+← Respuesta HTML al navegador
+
+===============================================================================
+INFORMACION DE CONTACTO DE LA EMPRESA
+===============================================================================
+
+- Telefono: +57 302 6648008
+- Email: ventas@imperialluxurycars.com
+- Direccion: Carrera 119a#70a-65
+
+===============================================================================
+CHECKLIST DE FUNCIONALIDADES
+===============================================================================
+
+[X] Estructura base del proyecto ASP.NET Core
+[X] Modelo de datos (Car)
+[X] Vista principal con catalogo
+[X] Estilos CSS responsive
+[X] Proteccion contra seleccion de texto
+[X] Bloqueo de clic derecho
+[X] Bloqueo de teclas de desarrollador (F12, Ctrl+U, Ctrl+Shift+I)
+[ ] Base de datos (pendiente)
+[ ] Sistema de autenticacion (pendiente)
+[ ] Carrito de compras (pendiente)
+[ ] Panel de administracion (pendiente)
+
+===============================================================================
+Fecha de Creacion: Febrero 4, 2026  
+Version: 1.0  
+Desarrollado con: ASP.NET Core + Razor Pages + C#
+===============================================================================

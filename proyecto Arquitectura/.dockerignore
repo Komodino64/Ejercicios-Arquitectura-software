@@ -1,0 +1,35 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# VS Code
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+README.md
+INSTRUCCIONES*.md
+GUIA*.md
+RESUMEN*.md
+OPTIMIZACION*.md
+LINUX_VM_SETUP.md
+
+# Testing
+.env.test
+
+# Logs
+logs/
+*.log
+
+# Temp
+tmp/
+temp/
+
+# OS
+.DS_Store
+Thumbs.db

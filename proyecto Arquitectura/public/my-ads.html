@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Anuncios - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="css/styles.css">    <link rel="stylesheet" href="css/protection.css"></head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🚗 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Mis Anuncios</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">Inicio</a>
+            <a href="contact.html">Contacto</a>
+            <a href="my-ads.html" id="navMyAds" class="hidden">Mis Anuncios</a>
+            <a href="#" id="navAdmin" class="hidden">Admin</a>
+            <a href="#" id="navLogout" class="hidden">Cerrar Sesión</a>
+            <a href="login.html" id="navLogin">Iniciar Sesión</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <section class="admin-section">
+                <div class="section-header">
+                    <h2>📋 Mis Publicaciones</h2>
+                    <button onclick="showAddCarModal()" class="btn-submit">➕ Publicar Vehículo</button>
+                </div>
+                
+                <div id="authCheck" class="loading">Verificando acceso...</div>
+                
+                <div id="myAdsSection" class="hidden">
+                    <div id="carsLoading" class="loading">Cargando tus anuncios...</div>
+                    
+                    <div id="carsTableContainer" class="hidden">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Marca/Modelo</th>
+                                    <th>Año</th>
+                                    <th>Precio</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carsTableBody">
+                                <!-- Se llenará con JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="noCars" class="hidden" style="text-align: center; padding: 60px; color: #64748b;">
+                        <h3 style="margin-bottom: 15px;">📭 No has publicado ningún vehículo</h3>
+                        <p style="margin-bottom: 20px;">Publica tu primer vehículo para comenzar a vender</p>
+                        <button onclick="showAddCarModal()" class="btn-submit">➕ Publicar Mi Primer Vehículo</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal para Agregar/Editar Vehículo -->
+    <div id="carModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div class="form-container" style="max-width: 700px; margin: 0; max-height: 90vh; overflow-y: auto;">
+            <h2 id="modalTitle">➕ Publicar Vehículo</h2>
+            
+            <form id="carForm">
+                <input type="hidden" id="carDocId">
+                
+                <div class="form-group">
+                    <label for="brand">Marca</label>
+                    <input type="text" id="brand" class="form-input" required placeholder="Ej: Mercedes-Benz">
+                </div>
+                
+                <div class="form-group">
+                    <label for="model">Modelo</label>
+                    <input type="text" id="model" class="form-input" required placeholder="Ej: S-Class">
+                </div>
+                
+                <div class="form-group">
+                    <label for="year">Año</label>
+                    <input type="number" id="year" class="form-input" required min="1900" max="2030" placeholder="2024">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Precio (USD)</label>
+                    <input type="number" id="price" class="form-input" required min="0" step="1000" placeholder="120000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" class="form-textarea" rows="3" required placeholder="Descripción detallada del vehículo..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Estado</label>
+                    <select id="status" class="form-input" required>
+                        <option value="Disponible">Disponible</option>
+                        <option value="Vendido">Vendido</option>
+                        <option value="Reservado">Reservado</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Imagen del Vehículo</label>
+                    <button type="button" id="uploadWidget" class="cloudinary-button">
+                        📸 Seleccionar Imagen
+                    </button>
+                    <input type="hidden" id="imageUrl" required>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">💾 Publicar</button>
+                    <button type="button" onclick="closeCarModal()" class="btn-cancel">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Cloudinary Upload Widget -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    
+    <!-- API Config & Auth (con cache-busting) -->
+    <script>
+        const apiConfigScript = document.createElement('script');
+        apiConfigScript.src = 'js/api-config.js?v=' + Date.now();
+        apiConfigScript.onload = function() {
+            const authScript = document.createElement('script');
+            authScript.src = 'js/auth.js';
+            document.head.appendChild(authScript);
+        };
+        document.head.appendChild(apiConfigScript);
+    </script>
+    
+    <!-- My Ads Logic -->
+    <script src="js/my-ads.js"></script>
+    
+    <!-- Protección Ultra Avanzada -->
+    <script src="js/protection.js"></script>
+</body>
+</html>

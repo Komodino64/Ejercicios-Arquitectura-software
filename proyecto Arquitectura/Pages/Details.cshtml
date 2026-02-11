@@ -1,0 +1,132 @@
+@page
+@model ImperialLuxuryCars.Pages.DetailsModel
+@{
+    ViewData["Title"] = Model.Car != null ? $"{Model.Car.Brand} {Model.Car.Model}" : "Detalles";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Los vehículos más exclusivos al alcance de tu mano</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/#catalogo">Catálogo</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="/Admin">Administración</a>
+            }
+            <a href="/Contact">Contacto</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a href="/Account/Logout">Cerrar Sesión (@User.Identity.Name)</a>
+            }
+            else
+            {
+                <a href="/Account/Login">Iniciar Sesión</a>
+                <a href="/Account/Register">Registrarse</a>
+            }
+        </div>
+    </nav>
+            <a href="/Contact">Contacto</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        @if (Model.Car != null)
+        {
+            <div class="details-container">
+                <div class="details-image">
+                    <img src="@Model.Car.ImageUrl" alt="@Model.Car.Brand @Model.Car.Model" />
+                    <span class="status-badge @(Model.Car.Status.ToLower())">@Model.Car.Status</span>
+                </div>
+                
+                <div class="details-info">
+                    <h1>@Model.Car.Brand @Model.Car.Model</h1>
+                    <p class="details-price">$@Model.Car.Price.ToString("N0")</p>
+                    
+                    <div class="details-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">📅 Año:</span>
+                            <span class="spec-value">@Model.Car.Year</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">🛣️ Kilometraje:</span>
+                            <span class="spec-value">@Model.Car.Mileage.ToString("N0") km</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">🎨 Color:</span>
+                            <span class="spec-value">@Model.Car.Color</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">⛽ Combustible:</span>
+                            <span class="spec-value">@Model.Car.FuelType</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">⚙️ Transmisión:</span>
+                            <span class="spec-value">@Model.Car.Transmission</span>
+                        </div>
+                    </div>
+                    
+                    <div class="details-description">
+                        <h3>Descripción</h3>
+                        <p>@Model.Car.Description</p>
+                    </div>
+                    
+                    <div class="details-actions">
+                        <a href="/Contact?carId=@Model.Car.Id" class="btn-contact-large">📧 Contactar sobre este vehículo</a>
+                        <a href="/" class="btn-back">← Volver al catálogo</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="error-message">
+                <h2>Vehículo no encontrado</h2>
+                <p>El vehículo que buscas no existe o ha sido eliminado.</p>
+                <a href="/" class="btn-back">← Volver al catálogo</a>
+            </div>
+        }
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            alert('El código de este sitio está protegido.');
+        });
+
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) return false;
+            if (e.ctrlKey && e.keyCode == 85) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false;
+        };
+    </script>
+</body>
+</html>

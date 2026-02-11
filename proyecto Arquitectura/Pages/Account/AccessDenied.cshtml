@@ -1,0 +1,45 @@
+@page
+@{
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS</h1>
+            <p class="tagline">Acceso Denegado</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/#catalogo">Catálogo</a>
+            <a href="/Contact">Contacto</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="error-message">
+            <h2>🚫 Acceso Denegado</h2>
+            <p>No tienes permisos para acceder a esta página.</p>
+            <p>Esta sección está disponible solo para administradores.</p>
+            <a href="/" class="btn-back">← Volver al inicio</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

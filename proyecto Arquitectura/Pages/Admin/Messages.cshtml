@@ -1,0 +1,76 @@
+@page
+@model ImperialLuxuryCars.Pages.Admin.MessagesModel
+@{
+    ViewData["Title"] = "Mensajes de Contacto";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Imperial Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/admin.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏆 IMPERIAL LUXURY CARS - ADMIN</h1>
+            <p class="tagline">Mensajes de Contacto</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="/">Inicio</a>
+            <a href="/Admin">Dashboard</a>
+            <a href="/Admin/Create">Agregar Vehículo</a>
+            <a href="/Admin/Messages">Mensajes</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="admin-section">
+            <h2>Todos los Mensajes de Contacto</h2>
+            
+            @if (Model.Messages.Any())
+            {
+                <div class="messages-grid">
+                    @foreach (var message in Model.Messages)
+                    {
+                        <div class="message-card-full">
+                            <div class="message-header">
+                                <div>
+                                    <h3>@message.Name</h3>
+                                    <p class="message-date">📅 @message.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                            <div class="message-body">
+                                <p><strong>📧 Email:</strong> @message.Email</p>
+                                <p><strong>📞 Teléfono:</strong> @message.Phone</p>
+                                @if (message.CarId.HasValue)
+                                {
+                                    <p><strong>🚗 Vehículo de Interés:</strong> ID #@message.CarId</p>
+                                }
+                                <p><strong>💬 Mensaje:</strong></p>
+                                <p class="message-text">@message.Message</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <p class="no-results">No hay mensajes de contacto.</p>
+            }
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Imperial Luxury Cars. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
