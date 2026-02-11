@@ -2,6 +2,29 @@
 // 🔐 AUTENTICACIÓN Y GESTIÓN DE SESIÓN (REST API)
 // ============================================
 
+// ============================================
+// OBJETO AUTH - Métodos de autenticación
+// ============================================
+const Auth = {
+    // Obtener usuario actual
+    getCurrentUser: function() {
+        return getUserData();
+    },
+    
+    // Verificar si está autenticado
+    isAuthenticated: function() {
+        const token = getAuthToken();
+        const user = getUserData();
+        return !!(token && user);
+    },
+    
+    // Verificar si es admin
+    isAdmin: function() {
+        const user = this.getCurrentUser();
+        return user && user.role === 'admin';
+    }
+};
+
 // Referencias a elementos de navegación
 const navAdmin = document.getElementById('navAdmin');
 const navLogout = document.getElementById('navLogout');

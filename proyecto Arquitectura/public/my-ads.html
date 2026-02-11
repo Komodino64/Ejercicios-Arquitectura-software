@@ -140,15 +140,18 @@
         apiConfigScript.onload = function() {
             const authScript = document.createElement('script');
             authScript.src = 'js/auth.js';
+            authScript.onload = function() {
+                // Cargar my-ads.js DESPUÉS de api-config y auth
+                const myAdsScript = document.createElement('script');
+                myAdsScript.src = 'js/my-ads.js';
+                document.head.appendChild(myAdsScript);
+            };
             document.head.appendChild(authScript);
         };
         document.head.appendChild(apiConfigScript);
     </script>
     
-    <!-- My Ads Logic -->
-    <script src="js/my-ads.js"></script>
-    
-    <!-- Protección Ultra Avanzada -->
-    <script src="js/protection.js"></script>
+    <!-- Protección Ultra Avanzada - DESACTIVADO PARA DEBUGGING -->
+    <!-- <script src="js/protection.js"></script> -->
 </body>
 </html>

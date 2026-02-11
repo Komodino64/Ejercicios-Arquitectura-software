@@ -326,21 +326,22 @@
         }
     </script>
     
-    <!-- Code Protection -->
+    <!-- Code Protection - TEMPORALMENTE DESACTIVADO PARA DEBUGGING -->
     <script>
         // Protección contra copia de código
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-                (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-            }
-        });
-        document.addEventListener('selectstart', e => e.preventDefault());
+        // DESACTIVADO: document.addEventListener('contextmenu', e => e.preventDefault());
+        // DESACTIVADO: document.addEventListener('keydown', e => {
+        //     if (e.key === 'F12' || 
+        //         (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        //         (e.ctrlKey && e.key === 'u')) {
+        //         e.preventDefault();
+        //     }
+        // });
+        // DESACTIVADO: document.addEventListener('selectstart', e => e.preventDefault());
+        console.log('🔓 Protecciones desactivadas para debugging');
     </script>
     
-    <!-- Protección Ultra Avanzada -->
-    <script src="js/protection.js"></script>
+    <!-- Protección Ultra Avanzada - TEMPORALMENTE DESACTIVADO -->
+    <!-- <script src="js/protection.js"></script> -->
 </body>
 </html>

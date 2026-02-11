@@ -169,15 +169,18 @@
         apiConfigScript.onload = function() {
             const authScript = document.createElement('script');
             authScript.src = 'js/auth.js';
+            authScript.onload = function() {
+                // Cargar admin.js DESPUÉS de api-config y auth
+                const adminScript = document.createElement('script');
+                adminScript.src = 'js/admin.js';
+                document.head.appendChild(adminScript);
+            };
             document.head.appendChild(authScript);
         };
         document.head.appendChild(apiConfigScript);
     </script>
     
-    <!-- Admin Logic -->
-    <script src="js/admin.js"></script>
-    
-    <!-- Protección Ultra Avanzada -->
-    <script src="js/protection.js"></script>
+    <!-- Protección Ultra Avanzada - DESACTIVADO PARA DEBUGGING -->
+    <!-- <script src="js/protection.js"></script> -->
 </body>
 </html>
