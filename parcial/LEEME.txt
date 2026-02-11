@@ -1,0 +1,27 @@
+# EJERCICIO 12 - Para Parcial
+
+## 📁 Archivos (Solo 2):
+- **Program.cs** ← TODO el código aquí
+- **Parcial.csproj** ← Configuración
+
+## ▶️ Ejecutar:
+```powershell
+dotnet run
+```
+
+## 🎯 Concepto:
+**UserProfileService NO SABE dónde se guardan los archivos**
+
+- IFileStorageService = Abstracción (interfaz)
+- LocalFileStorage = Guarda en C:\uploads (funciona REAL)
+- AzureBlobStorage = Simulación (para demostrar el concepto)
+
+## ✅ Principio:
+**Inversión de Dependencias (DIP)**
+- El servicio depende de la INTERFAZ, no de la implementación
+- Puedes cambiar de Local a Azure sin modificar UserProfileService
+
+## 💡 Lo Importante:
+El Azure está SIMULADO porque el punto es demostrar la ABSTRACCIÓN,
+no implementar Azure realmente. El servicio funciona igual con ambas
+implementaciones sin saber cuál es cuál.

@@ -1,0 +1,19 @@
+-- 1) Crear base de datos
+CREATE DATABASE IF NOT EXISTS MiDB;
+USE MiDB;
+
+-- 2) Tablas
+CREATE TABLE IF NOT EXISTS Clientes (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Correo VARCHAR(120) NULL,
+    Telefono VARCHAR(30) NULL
+);
+
+CREATE TABLE IF NOT EXISTS Pedidos (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Fecha DATETIME NOT NULL,
+    Total DECIMAL(18,2) NOT NULL,
+    ClienteId INT NOT NULL,
+    CONSTRAINT FK_Pedidos_Clientes FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+);

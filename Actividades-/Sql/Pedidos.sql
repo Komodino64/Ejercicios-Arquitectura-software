@@ -1,0 +1,7 @@
+CREATE TABLE Pedidos (
+    Id INT AUTO_INCREMENT PRIMARY KEY,
+    Fecha DATETIME NOT NULL,
+    Total DECIMAL(18,2) NOT NULL,
+    ClienteId INT NOT NULL,
+    CONSTRAINT FK_Pedidos_Clientes FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+);

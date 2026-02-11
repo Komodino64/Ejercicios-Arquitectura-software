@@ -8,8 +8,12 @@
     // Detectar DevTools abierto (monitorear tamaño de consola)
     let devtoolsOpen = false;
     const threshold = 160;
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
     setInterval(function() {
+        // Solo aplicar en producción, no en localhost
+        if (isLocalhost) return;
+        
         const widthThreshold = window.outerWidth - window.innerWidth > threshold;
         const heightThreshold = window.outerHeight - window.innerHeight > threshold;
         

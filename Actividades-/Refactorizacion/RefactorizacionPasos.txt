@@ -1,0 +1,7 @@
+1) Extraer validaciones del botón Guardar a una clase de lógica (capa de negocio).
+2) Crear una entidad o DTO Cliente en la capa de dominio.
+3) Mover acceso a BD a una clase de datos (ClienteDatos).
+4) El formulario solo llama a la lógica: Logica.Insertar(cliente).
+5) La lógica valida y luego invoca la capa de datos.
+6) La capa de datos ejecuta SQL y retorna resultado.
+7) El formulario solo muestra mensajes de éxito/error.

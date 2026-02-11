@@ -1,0 +1,230 @@
+================================================================================
+              EJERCICIOS 34 Y 35 - ARQUITECTURA A TRES CAPAS
+================================================================================
+
+ALUMNO: _______________________
+FECHA: Febrero 3, 2026
+
+================================================================================
+EJERCICIO 35: CLASE CONEXION
+================================================================================
+
+OBJETIVO:
+Crear una clase Conexion con un método que devuelva un objeto SqlConnection 
+configurado, manejando errores con try-catch.
+
+CÓDIGO IMPLEMENTADO (Conexion.cs):
+
+    public class Conexion
+    {
+        private string cadenaConexion = @"Server=localhost;Database=MiBaseDatos;Integrated Security=true;";
+
+        public SqlConnection ObtenerConexion()
+        {
+            SqlConnection conexion = null;
+            try
+            {
+                conexion = new SqlConnection(cadenaConexion);
+                conexion.Open();
+                return conexion;
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Error de conexión a SQL Server: " + ex.Message, ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error general de conexión: " + ex.Message, ex);
+            }
+        }
+
+        public void CerrarConexion(SqlConnection conexion)
+        {
+            if (conexion != null && conexion.State == System.Data.ConnectionState.Open)
+                conexion.Close();
+        }
+    }
+
+EXPLICACIÓN:
+- El método ObtenerConexion() crea y abre una conexión a SQL Server
+- Usa try-catch para capturar errores de conexión (SqlException) y generales
+- La cadena de conexión contiene: servidor, base de datos y autenticación
+- Se incluye método CerrarConexion() para cerrar la conexión de forma segura
+
+
+================================================================================
+EJERCICIO 34: MÉTODO InsertarCliente
+================================================================================
+
+OBJETIVO:
+Escribir un método InsertarCliente en la clase Logica.Cliente que reciba datos
+del cliente, instancie la clase de acceso a datos y ejecute el SQL INSERT.
+
+CÓDIGO IMPLEMENTADO (LogicaCliente.cs):
+
+    public class LogicaCliente
+    {
+        private DatosCliente datosCliente;
+
+        public LogicaCliente()
+        {
+            datosCliente = new DatosCliente();
+        }
+
+        public bool InsertarCliente(string nombre, string apellido, string email, 
+                                    string telefono, string direccion)
+        {
+            try
+            {
+                // 1. Validar datos (Lógica de Negocio)
+                if (string.IsNullOrWhiteSpace(nombre))
+                    throw new ArgumentException("El nombre es obligatorio.");
+                
+                if (string.IsNullOrWhiteSpace(apellido))
+                    throw new ArgumentException("El apellido es obligatorio.");
+
+                // 2. Crear objeto Cliente
+                Cliente cliente = new Cliente
+                {
+                    Nombre = nombre.Trim(),
+                    Apellido = apellido.Trim(),
+                    Email = email?.Trim(),
+                    Telefono = telefono?.Trim(),
+                    Direccion = direccion?.Trim(),
+                    FechaRegistro = DateTime.Now
+                };
+
+                // 3. Instanciar clase de acceso a datos (ya hecho en constructor)
+                // 4. Ejecutar SQL INSERT
+                bool resultado = datosCliente.Insertar(cliente);
+                
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al insertar cliente: " + ex.Message, ex);
+            }
+        }
+    }
+
+EXPLICACIÓN:
+- Recibe los datos del cliente como parámetros
+- Valida que nombre y apellido no estén vacíos
+- Crea un objeto Cliente con los datos
+- Instancia DatosCliente (en el constructor)
+- Llama al método Insertar() que ejecuta el SQL INSERT
+- Retorna true si tuvo éxito, false si falló
+
+
+MÉTODO DE LA CAPA DE DATOS (DatosCliente.cs):
+
+    public bool Insertar(Cliente cliente)
+    {
+        SqlConnection conn = null;
+        SqlCommand cmd = null;
+        try
+        {
+            conn = conexion.ObtenerConexion();
+            
+            string sql = @"INSERT INTO Clientes (Nombre, Apellido, Email, Telefono, Direccion, FechaRegistro) 
+                          VALUES (@Nombre, @Apellido, @Email, @Telefono, @Direccion, @FechaRegistro)";
+            
+            cmd = new SqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Nombre", cliente.Nombre);
+            cmd.Parameters.AddWithValue("@Apellido", cliente.Apellido);
+            cmd.Parameters.AddWithValue("@Email", cliente.Email ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Telefono", cliente.Telefono ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@Direccion", cliente.Direccion ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@FechaRegistro", cliente.FechaRegistro);
+            
+            int filasAfectadas = cmd.ExecuteNonQuery();
+            return filasAfectadas > 0;
+        }
+        finally
+        {
+            if (cmd != null) cmd.Dispose();
+            if (conn != null) conexion.CerrarConexion(conn);
+        }
+    }
+
+EXPLICACIÓN:
+- Usa la clase Conexion para obtener SqlConnection
+- Crea la sentencia SQL INSERT con parámetros
+- Agrega parámetros para prevenir SQL Injection
+- Ejecuta con ExecuteNonQuery() que retorna filas afectadas
+- Libera recursos en el bloque finally
+
+
+================================================================================
+PASOS PARA EJECUTAR
+================================================================================
+
+1. CREAR LA BASE DE DATOS:
+   Abrir SQL Server Management Studio y ejecutar:
+
+   CREATE DATABASE MiBaseDatos;
+   GO
+   
+   USE MiBaseDatos;
+   GO
+   
+   CREATE TABLE Clientes (
+       IdCliente INT PRIMARY KEY IDENTITY(1,1),
+       Nombre NVARCHAR(100) NOT NULL,
+       Apellido NVARCHAR(100) NOT NULL,
+       Email NVARCHAR(100),
+       Telefono NVARCHAR(20),
+       Direccion NVARCHAR(200),
+       FechaRegistro DATETIME NOT NULL DEFAULT GETDATE()
+   );
+
+2. CONFIGURAR CADENA DE CONEXIÓN:
+   En Conexion.cs, ajustar según tu servidor:
+   
+   Server=localhost               // o nombre de tu servidor
+   Database=MiBaseDatos
+   Integrated Security=true       // autenticación de Windows
+
+3. COMPILAR:
+   En PowerShell, desde la carpeta del proyecto:
+
+   csc /out:App.exe /reference:System.Data.dll Entidades\Cliente.cs Conexion.cs CapaDatos\DatosCliente.cs CapaLogica\LogicaCliente.cs Program.cs
+
+4. EJECUTAR:
+   .\App.exe
+
+5. VERIFICAR EN SQL:
+   SELECT * FROM Clientes;
+
+
+================================================================================
+ARQUITECTURA IMPLEMENTADA
+================================================================================
+
+ESTRUCTURA:
+    
+    [Presentación] Program.cs
+         ↓
+    [Lógica] LogicaCliente.cs → Valida datos, coordina operaciones
+         ↓
+    [Datos] DatosCliente.cs → Ejecuta SQL INSERT
+         ↓
+    [Conexion] Conexion.cs → Gestiona SqlConnection
+         ↓
+    [SQL Server] Base de datos
+
+ARCHIVOS CREADOS:
+✓ Conexion.cs - Clase de conexión (Ejercicio 35)
+✓ Entidades\Cliente.cs - Clase entidad
+✓ CapaDatos\DatosCliente.cs - Capa de acceso a datos
+✓ CapaLogica\LogicaCliente.cs - Lógica de negocio con InsertarCliente (Ejercicio 34)
+✓ Program.cs - Capa de presentación
+✓ ScriptBaseDatos.sql - Script para crear BD
+
+VENTAJAS:
+✓ Separación de responsabilidades
+✓ Código organizado y mantenible
+✓ Seguridad con parámetros SQL
+✓ Manejo de errores con try-catch
+
+================================================================================
