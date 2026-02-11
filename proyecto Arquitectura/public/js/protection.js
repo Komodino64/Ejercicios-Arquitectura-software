@@ -111,27 +111,18 @@
         });
     }
     
-    // Detector de debugger
-    setInterval(function() {
-        debugger; // Si DevTools está abierto, esto pausa la ejecución
-    }, 100);
-    
-    // Detector de DevTools - Múltiples métodos
-    let devtoolsOpen = false;
+    // Detector de debugger (solo en producción)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        setInterval(function() {
+            debugger; // Si DevTools está abierto, esto pausa la ejecución
+        }, 1000);
+    }
     
     // Método 1: Detectar por tamaño de ventana
     const detectDevToolsBySize = () => {
         const widthThreshold = window.outerWidth - window.innerWidth > 160;
         const heightThreshold = window.outerHeight - window.innerHeight > 160;
         return widthThreshold || heightThreshold;
-    };
-    
-    // Método 2: Debugger trampa
-    const detectDevToolsByDebugger = () => {
-        const start = performance.now();
-        debugger;
-        const end = performance.now();
-        return end - start > 100;
     };
     
     // Método 3: Console.log monitoreo
@@ -145,7 +136,7 @@
     
     // Verificación continua
     setInterval(() => {
-        if (detectDevToolsBySize() || detectDevToolsByDebugger()) {
+        if (detectDevToolsBySize()) {
             devtoolsOpen = true;
             redirectToWarning();
         }
