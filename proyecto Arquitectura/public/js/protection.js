@@ -104,11 +104,14 @@
     // Proteger contra console debugging
     if (typeof console !== 'undefined') {
         const noop = function() {};
-        ['log', 'debug', 'info', 'warn', 'error'].forEach(method => {
-            if (typeof console[method] === 'function') {
-                // console[method] = noop; // Descomentar para bloquear console
-            }
-        });
+        // Solo bloquear en producción (no en localhost)
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            ['log', 'debug', 'info', 'warn', 'error'].forEach(method => {
+                if (typeof console[method] === 'function') {
+                    console[method] = noop;
+                }
+            });
+        }
     }
     
     // Detector de debugger (solo en producción)
@@ -134,15 +137,17 @@
         }
     });
     
-    // Verificación continua
-    setInterval(() => {
-        if (detectDevToolsBySize()) {
-            devtoolsOpen = true;
-            redirectToWarning();
-        }
-        console.log(element);
-        console.clear();
-    }, 1000);
+    // Verificación continua (solo en producción)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        setInterval(() => {
+            if (detectDevToolsBySize()) {
+                devtoolsOpen = true;
+                redirectToWarning();
+            }
+            console.log(element);
+            console.clear();
+        }, 2000);
+    }
     
     // Redirigir si DevTools abierto
     function redirectToWarning() {
@@ -180,18 +185,20 @@
     // Proteger contra view-source
     if (window.location.protocol === 'view-source:') {
         window.location = window.location.href.replace('view-source:', '');
+    } (solo en producción)
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        setInterval(() => {
+            document.querySelectorAll('*').forEach(el => {
+                if (el.hasAttribute('data-reactid') || 
+                    el.hasAttribute('data-react-root') ||
+                    el.hasAttribute('ng-version')) {
+                    el.removeAttribute('data-reactid');
+                    el.removeAttribute('data-react-root');
+                    el.removeAttribute('ng-version');
+                }
+            });
+        }, 3000);
     }
-    
-    // Limpiar atributos de elementos que pueden dar pistas
-    setInterval(() => {
-        document.querySelectorAll('*').forEach(el => {
-            if (el.hasAttribute('data-reactid') || 
-                el.hasAttribute('data-react-root') ||
-                el.hasAttribute('ng-version')) {
-                el.removeAttribute('data-reactid');
-                el.removeAttribute('data-react-root');
-                el.removeAttribute('ng-version');
-            }
         });
     }, 2000);
     
