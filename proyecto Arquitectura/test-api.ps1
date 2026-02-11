@@ -1,6 +1,6 @@
-# 🧪 SCRIPT RÁPIDO DE PRUEBAS API
+# Script rapido de pruebas API
 
-Write-Host "`n=== 🧪 PRUEBAS API - IMPERIAL LUXURY CARS ===" -ForegroundColor Cyan
+Write-Host "`n=== PRUEBAS API - IMPERIAL LUXURY CARS ===" -ForegroundColor Cyan
 Write-Host "================================================`n" -ForegroundColor Cyan
 
 # Función helper para tests
@@ -26,17 +26,17 @@ function Test-Endpoint {
             $params.ContentType = "application/json"
         }
         
-        $response = Invoke-RestMethod @params
-        Write-Host "✅ PASÓ" -ForegroundColor Green
+        $response = Invoke-RestMethod @params -ErrorAction Stop
+        Write-Host "OK PASO" -ForegroundColor Green
         return $response
     } catch {
-        Write-Host "❌ FALLÓ: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "FALLO: $($_.Exception.Message)" -ForegroundColor Red
         return $null
     }
 }
 
 # 1. Health Check
-Write-Host "`n📡 1. HEALTH CHECK" -ForegroundColor Cyan
+Write-Host "`n[1] HEALTH CHECK" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 $health = Test-Endpoint -Name "Backend Health" -Method GET -Uri "http://localhost:5000/"
 if ($health) {
@@ -44,7 +44,7 @@ if ($health) {
 }
 
 # 2. Login
-Write-Host "`n🔐 2. AUTENTICACIÓN" -ForegroundColor Cyan
+Write-Host "`n[2] AUTENTICACION" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 $loginBody = @{
     email = "admin@imperialluxury.com"
@@ -62,8 +62,8 @@ if ($loginResponse) {
     Write-Host "   Token: $($token.Substring(0, 30))...`n" -ForegroundColor Gray
 }
 
-# 3. Listar Vehículos
-Write-Host "`n🚗 3. VEHÍCULOS" -ForegroundColor Cyan
+# 3. Listar Vehiculos
+Write-Host "`n[3] VEHICULOS" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 $cars = Test-Endpoint -Name "Listar Vehículos" -Method GET -Uri "http://localhost:5000/api/cars"
 
@@ -89,9 +89,9 @@ if ($cars -and $cars.cars.Count -gt 0) {
     }
 }
 
-# 5. Mis Vehículos (requiere auth)
+# 5. Mis Vehiculos (requiere auth)
 if ($token) {
-    Write-Host "`n👤 4. MIS VEHÍCULOS (Autenticado)" -ForegroundColor Cyan
+    Write-Host "`n[4] MIS VEHICULOS (Autenticado)" -ForegroundColor Cyan
     Write-Host "================================" -ForegroundColor Cyan
     $headers = @{
         "Authorization" = "Bearer $token"
@@ -106,9 +106,9 @@ if ($token) {
     }
 }
 
-# 6. Crear Vehículo (requiere auth)
+# 6. Crear Vehiculo (requiere auth)
 if ($token) {
-    Write-Host "`n➕ 5. CREAR VEHÍCULO" -ForegroundColor Cyan
+    Write-Host "`n[5] CREAR VEHICULO" -ForegroundColor Cyan
     Write-Host "================================" -ForegroundColor Cyan
     $headers = @{
         "Authorization" = "Bearer $token"
@@ -134,8 +134,8 @@ if ($token) {
         Write-Host "   ID: $testCarId" -ForegroundColor Gray
         Write-Host "   Creado: $($newCar.brand) $($newCar.model)`n" -ForegroundColor Gray
         
-        # 7. Actualizar Vehículo
-        Write-Host "`n✏️  6. ACTUALIZAR VEHÍCULO" -ForegroundColor Cyan
+        # 7. Actualizar Vehiculo
+        Write-Host "`n[6] ACTUALIZAR VEHICULO" -ForegroundColor Cyan
         Write-Host "================================" -ForegroundColor Cyan
         $updateBody = @{
             price = 95000
@@ -152,8 +152,8 @@ if ($token) {
             Write-Host "   Nuevo estado: $($updated.status)`n" -ForegroundColor Gray
         }
         
-        # 8. Eliminar Vehículo
-        Write-Host "`n🗑️  7. ELIMINAR VEHÍCULO" -ForegroundColor Cyan
+        # 8. Eliminar Vehiculo
+        Write-Host "`n[7] ELIMINAR VEHICULO" -ForegroundColor Cyan
         Write-Host "================================" -ForegroundColor Cyan
         $deleted = Test-Endpoint -Name "Eliminar Vehículo de Prueba" -Method DELETE `
             -Uri "http://localhost:5000/api/cars/$testCarId" `
@@ -166,7 +166,7 @@ if ($token) {
 }
 
 # 9. Contacto
-Write-Host "`n📧 8. CONTACTO" -ForegroundColor Cyan
+Write-Host "`n[8] CONTACTO" -ForegroundColor Cyan
 Write-Host "================================" -ForegroundColor Cyan
 $contactBody = @{
     name = "Test Usuario"
@@ -185,7 +185,7 @@ if ($contact) {
 
 # 10. Stats (admin only)
 if ($token) {
-    Write-Host "`n📊 9. ESTADÍSTICAS (Admin)" -ForegroundColor Cyan
+    Write-Host "`n[9] ESTADISTICAS (Admin)" -ForegroundColor Cyan
     Write-Host "================================" -ForegroundColor Cyan
     $headers = @{
         "Authorization" = "Bearer $token"
@@ -205,5 +205,5 @@ if ($token) {
 }
 
 # Resumen
-Write-Host "`n=== ✅ PRUEBAS COMPLETADAS ===" -ForegroundColor Green
+Write-Host "`n=== PRUEBAS COMPLETADAS ===" -ForegroundColor Green
 Write-Host "================================================`n" -ForegroundColor Green
