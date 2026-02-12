@@ -6,6 +6,38 @@ Esta guía te ayudará a respaldar todo el proyecto y reinstalarlo en un nuevo d
 
 ---
 
+## 🎯 ¿QUÉ OPCIÓN ELEGIR?
+
+### Opción 1: CLONAR TODO EL DISCO (Recomendado)
+**⏱️ Tiempo:** 2-4 horas | **📚 Guía:** [CLONAR_DISCO_COMPLETO.md](CLONAR_DISCO_COMPLETO.md)
+
+✅ **Usa esta opción si:**
+- Quieres migrar TODO (Windows + programas + proyecto)
+- Tu sistema actual funciona bien
+- No quieres reinstalar nada
+- Prefieres la solución más rápida
+
+**Resultado:** Sistema idéntico en disco nuevo, todo funciona inmediatamente.
+
+---
+
+### Opción 2: REINSTALAR DESDE CERO (Esta guía)
+**⏱️ Tiempo:** 5-8 horas | **📚 Guía:** Esta página
+
+✅ **Usa esta opción si:**
+- Solo quieres migrar el proyecto
+- Vas a formatear e instalar Windows limpio
+- Quieres sistema fresco sin archivos viejos
+- Te gusta configurar todo manualmente
+
+**Resultado:** Windows limpio + proyecto restaurado + configuración manual.
+
+---
+
+> **💡 Recomendación:** Si tu Windows funciona bien, usa **Opción 1 (Clonar)**. Es más rápido y seguro.
+
+---
+
 ## 📦 PARTE 1: HACER BACKUP (ANTES DE FORMATEAR)
 
 ### Paso 1: Respaldar Código del Proyecto
