@@ -189,7 +189,9 @@
     // Proteger contra view-source
     if (window.location.protocol === 'view-source:') {
         window.location = window.location.href.replace('view-source:', '');
-    } (solo en producción)
+    }
+    
+    // Limpiar atributos de frameworks en producción
     if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
         setInterval(() => {
             document.querySelectorAll('*').forEach(el => {
@@ -203,8 +205,6 @@
             });
         }, 3000);
     }
-        });
-    }, 2000);
     
     // Mensaje de advertencia para intentos de inspección
     window.addEventListener('devtoolschange', event => {
